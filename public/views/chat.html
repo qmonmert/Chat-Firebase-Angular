@@ -1,0 +1,53 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-comment"></span> Chat
+                </div>
+                <div class="panel-body">
+                    <ul class="chat">
+
+                        <li ng-repeat="message in messages" class="clearfix" ng-class-odd="'left'" ng-class-even="'right'">
+                            <span class="chat-img" ng-class-odd="'pull-left'" ng-class-even="'pull-right'">
+                                <img ng-src="{{ message.img }}" alt="User Avatar" class="img-circle" width="75px">
+                            </span>
+                            <div class="chat-body clearfix">
+                                <div class="header" ng-if="$even">
+                                    <strong class="primary-font">{{ message.pseudo }}</strong>
+                                    <small class="text-muted pull-right">
+                                        <span class="glyphicon glyphicon-time"></span>
+                                        {{ message.time | date : 'HH:mm, dd MMMM'}}
+                                    </small>
+                                </div>
+                                <div class="header" ng-if="$odd">
+                                    <small class=" text-muted">
+                                        <span class="glyphicon glyphicon-time"></span>
+                                        {{ message.time | date : 'HH:mm, dd MMMM'}}
+                                    </small>
+                                    <strong class="pull-right primary-font">{{ message.pseudo }}</strong>
+                                </div>
+                                <p>
+                                    {{ message.text }}
+                                </p>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+                <form ng-submit="addMessage()">
+                    <div class="panel-footer">
+                        <div class="input-group">
+                            <input ng-model="newMessageText" id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here...">
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-warning btn-sm" id="btn-chat">
+                                    Send</button>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
