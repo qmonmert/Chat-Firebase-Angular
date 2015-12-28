@@ -1,0 +1,30 @@
+/* Imports */
+@import 'compass/css3';
+
+/* Variables */
+$body-background-color: #EEEEEE;
+$loginbox-background-color: #F5F5F5;
+
+/* Code */
+body {
+  background-color: $body-background-color;
+}
+
+#loginbox {
+  max-width: 450px;
+  margin: 0 auto 20px;
+  background-color: $loginbox-background-color;
+  margin-top: 10px;
+  @include box-shadow(#555555 4px 4px 15px);
+
+  .panel-info {
+    border-color: #FFFFFF;
+  }
+
+  .panel-heading {
+    background-color: white !important;
+    border-color: #EEEEEE !important;
+  }
+
+}
+

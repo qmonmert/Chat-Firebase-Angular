@@ -1,5 +1,8 @@
 /* Imports */
+@import 'compass/css3';
+
 /* Code */
+
 .chat {
   list-style: none;
   margin: 0;
@@ -45,7 +48,7 @@
 }
 
 #chat::-webkit-scrollbar-thumb {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
   background-color: #555;
 }
 
@@ -58,24 +61,23 @@
 }
 
 /* Attention */
+
 #chatPanel {
-  -moz-box-shadow: #555555 22px 22px 25px;
-  -webkit-box-shadow: #555555 22px 22px 25px;
-  box-shadow: #555555 22px 22px 25px;
-}
-#chatPanel .btn-warning {
-  background-color: #CCCCCC !important;
-  border-color: #CCCCCC !important;
-}
-#chatPanel .btn-warning:hover {
-  background-color: #CCCCCC !important;
-  border-color: #AAAAAA !important;
+  @include box-shadow(#555555 22px 22px 25px);
+  .btn-warning {
+    background-color: #CCCCCC !important;
+    border-color: #CCCCCC !important;
+  }
+  .btn-warning:hover {
+    background-color: #CCCCCC !important;
+    border-color: #AAAAAA !important;
+  }
 }
 
 .panel-primary {
   border: none !important;
-}
-.panel-primary .panel-heading {
-  background-color: #CCCCCC !important;
-  border: none !important;
+  .panel-heading {
+    background-color: #CCCCCC !important;
+    border: none !important;
+  }
 }
