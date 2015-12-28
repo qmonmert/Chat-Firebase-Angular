@@ -49,7 +49,6 @@ app.factory("Auth", ["$firebaseAuth", "Constants", function($firebaseAuth, Const
 app.config(["$stateProvider", "$urlRouterProvider", "$locationProvider", function($stateProvider, $urlRouterProvider, $locationProvider) {
 
     // Active the html5Mode
-    //$locationProvider.html5Mode(true);
     $locationProvider.html5Mode(true).hashPrefix('!')
 
 	// For any unmatched url, redirect to /
@@ -125,7 +124,7 @@ app.controller("ChatCtrl", ["$scope", "$firebaseArray", "Constants", function($s
 
     // Scroll
     $scope.scroll = function() {
-        $('.panel-body').scrollTop(100000);
+        $('.panel-body').scrollTop(1000000);
     };
 
     // Complete infos according to the user connected
