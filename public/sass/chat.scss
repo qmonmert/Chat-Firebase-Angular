@@ -63,6 +63,8 @@
 /* Attention */
 
 #chatPanel {
+  max-width: 450px;
+  margin: 0 auto 20px;
   @include box-shadow(#555555 22px 22px 25px);
   .btn-warning {
     background-color: #CCCCCC !important;

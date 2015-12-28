@@ -59,6 +59,8 @@
 
 /* Attention */
 #chatPanel {
+  max-width: 450px;
+  margin: 0 auto 20px;
   -moz-box-shadow: #555555 22px 22px 25px;
   -webkit-box-shadow: #555555 22px 22px 25px;
   box-shadow: #555555 22px 22px 25px;
