@@ -1,0 +1,57 @@
+<div class="container" >
+
+    <div id="admin">
+
+        <div class="alert alert-success" role="alert">Welcome on the administration</div>
+
+        <div class="row" style="padding-bottom: 10px;">
+
+            <div class="col-md-4">
+                <img ng-src="img/quentin.jpg" alt="User Avatar" class="img-circle" width="120px">
+            </div>
+
+            <div class="col-md-8">
+                Quentin
+            </div>
+
+        </div>
+
+        <div class="row" style="padding-bottom: 10px;">
+
+            <div class="col-md-12">
+
+                <button class="btn btn-primary" type="button">
+                    Users <span class="badge">4</span>
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-12">
+
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <th>Email</th>
+                        <th>Password</th>
+                        <th>Pseudo</th>
+                        <th>Img</th>
+                    </thead>
+                    <tr ng-repeat="user in users">
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.password }}</td>
+                        <td>{{ user.pseudo }}</td>
+                        <td>{{ user.img }}</td>
+                    </tr>
+                </table>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>

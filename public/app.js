@@ -1,15 +1,19 @@
 // Module
-var app = angular.module("ChatFirebaseAngularApp", ["firebase", "ui.router"]);
+angular.module("ChatFirebaseAngularApp", ["firebase", "ui.router"]);
 
 
-// Constant
-app.constant("Constants", {
+// Constants
+angular.module("ChatFirebaseAngularApp").constant("Constants", {
 	"url_firebase": "https://popping-fire-9851.firebaseio.com/data"
 });
 
 
 // Run
-app.run(["$rootScope", "Constants", "$state", function($rootScope, Constants, $state) {
+angular.module('ChatFirebaseAngularApp').run(Run);
+
+Run.$inject = ['$rootScope', 'Constants', '$state'];
+
+function Run($rootScope, Constants, $state) {
 
     $rootScope.$on("$stateChangeStart", function(event, toState, toParams, fromState, fromParams) {
         if (toState.authenticate && !$rootScope.isAuthenticated){
@@ -33,69 +37,91 @@ app.run(["$rootScope", "Constants", "$state", function($rootScope, Constants, $s
         }
     }
 
-}]);
+}
 
 
 // Factory
-app.factory("Auth", ["$firebaseAuth", "Constants", function($firebaseAuth, Constants) {
+angular.module('ChatFirebaseAngularApp').factory('Auth', Auth);
 
-	var ref = new Firebase(Constants.url_firebase);
-	return $firebaseAuth(ref);
+Auth.$inject = ['$firebaseAuth', 'Constants'];
 
-}]);
+function Auth($firebaseAuth, Constants) {
+
+    var ref = new Firebase(Constants.url_firebase);
+    return $firebaseAuth(ref);
+
+}
 
 
 // Config
-app.config(["$stateProvider", "$urlRouterProvider", "$locationProvider", function($stateProvider, $urlRouterProvider, $locationProvider) {
+angular.module('ChatFirebaseAngularApp').config(Config);
+
+Config.$inject = ['$stateProvider', '$urlRouterProvider', '$locationProvider'];
+
+function Config($stateProvider, $urlRouterProvider, $locationProvider) {
 
     // Active the html5Mode
     $locationProvider.html5Mode(true).hashPrefix('!')
 
-	// For any unmatched url, redirect to /
-	$urlRouterProvider.otherwise("/");
+    // For any unmatched url, redirect to /
+    $urlRouterProvider.otherwise("/");
 
-	$stateProvider
-	  .state("home", {
-		url: "/",
-	    templateUrl: "/views/login.html",
-	    controller: "LoginCtrl",
-        authenticate: false
-	  })
-	  .state("chat", {
-        url: "/chat",
-	    templateUrl: "/views/chat.html",
-	    controller: "ChatCtrl",
-        authenticate: true
-	  });
+    $stateProvider
+        .state("home", {
+            url: "/",
+            templateUrl: "/views/login.html",
+            controller: "LoginCtrl",
+            authenticate: false
+        })
+        .state("chat", {
+            url: "/chat",
+            templateUrl: "/views/chat.html",
+            controller: "ChatCtrl",
+            authenticate: true
+        })
+        .state("admin", {
+            url: "/admin",
+            templateUrl: "/views/admin.html",
+            controller: "AdminCtrl",
+            authenticate: false
+        });
 
-}]);
+}
 
 
-// Controller : Login
-app.controller("LoginCtrl", ["$scope", "$state", "Auth", function($scope, $state, Auth) {
+// Contoller : Login
+angular.module('ChatFirebaseAngularApp').controller('LoginCtrl', LoginCtrl);
+
+LoginCtrl.$inject = ['$scope', '$state', 'Auth'];
+
+function LoginCtrl($scope, $state, Auth) {
 
     // Function to log the user
-	$scope.login = function() {
-		Auth.$authWithPassword({
-		  email    : $scope.email,
-		  password : $scope.password
-		}).then(function(authData) {
-			console.log("Login success : " + authData);
-			$state.go("chat");
-		}, function(error) {
+    $scope.login = function() {
+        Auth.$authWithPassword({
+            email    : $scope.email,
+            password : $scope.password
+        }).then(function(authData) {
+            console.log("Login success : " + authData);
+            $state.go("chat");
+        }, function(error) {
             console.error("Login fail : " + error);
         });
-	};
+    };
 
-}]);
+}
 
 
 // Contoller : Chat
-app.controller("ChatCtrl", ["$scope", "$firebaseArray", "Constants", function($scope, $firebaseArray, Constants) {
+angular.module('ChatFirebaseAngularApp').controller('ChatCtrl', ChatCtrl);
+
+ChatCtrl.$inject = ['$scope', '$firebaseArray', 'Constants'];
+
+function ChatCtrl($scope, $firebaseArray, Constants) {
 
     // Get all the messages of the chat
-	var ref = new Firebase(Constants.url_firebase);
-	$scope.messages = $firebaseArray(ref);
+    var ref = new Firebase(Constants.url_firebase);
+    $scope.messages = $firebaseArray(ref);
 
     // Get the user connected
     var authData = ref.getAuth();
@@ -103,19 +129,19 @@ app.controller("ChatCtrl", ["$scope", "$firebaseArray", "Constants", function($s
     getInfosOnTheUserConnected();
 
     // Function to add a new message in the chat
-	$scope.addMessage = function() {
+    $scope.addMessage = function() {
         var timestamp = new Date().getTime();
-		$scope.messages.$add({
-			user:   $scope.email,
+        $scope.messages.$add({
+            user:   $scope.email,
             pseudo: $scope.pseudo,
-			text:   $scope.newMessageText,
+            text:   $scope.newMessageText,
             img:    $scope.img,
             time:   timestamp
-		}).then(function() {
+        }).then(function() {
             $scope.scroll();
         });
-		$scope.newMessageText = "";
-	};
+        $scope.newMessageText = "";
+    };
 
     // Scroll down when the chat is loaded
     setTimeout(function(){
@@ -144,4 +170,22 @@ app.controller("ChatCtrl", ["$scope", "$firebaseArray", "Constants", function($s
         }
     };
 
-}]);
+}
+
+
+// Contoller : Admin
+angular.module('ChatFirebaseAngularApp').controller('AdminCtrl', AdminCtrl);
+
+AdminCtrl.$inject = ['$scope'];
+
+function AdminCtrl($scope) {
+
+    $scope.users = [
+        {email: "quentin.monmert@gmail.com", password: "admin",    pseudo: "Quentin", img: "img/quentin.jpg" },
+        {email: "thibaudmonmert@gmail.com",  password: "pass",     pseudo: "Thibaud", img: "img/thibaud.jpg" },
+        {email: "gmonmert@gmail.com",        password: "pass",     pseudo: "Gautier", img: "img/gautier.jpg" },
+        {email: "user@user.com",             password: "password", pseudo: "Unknown", img: "..."             }
+    ];
+
+}
+

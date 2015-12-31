@@ -1,0 +1,19 @@
+/* Imports */
+@import 'compass/css3';
+
+/* Variables */
+$admin-background-color: #F5F5F5;
+
+/* Code */
+#admin {
+  max-width: 500px;
+  margin: 0 auto 20px;
+  background-color: $admin-background-color;
+  margin-top: 10px;
+  @include box-shadow(#555555 4px 4px 15px);
+  padding: 5px;
+}
+
+#admin table {
+  font-size: 12px;
+}
