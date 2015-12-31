@@ -51,6 +51,40 @@
 
         </div>
 
+        <div class="row" style="padding-bottom: 10px;">
+
+            <div class="col-md-12">
+
+                <button class="btn btn-primary" type="button">
+                    Activities <span class="badge">50</span>
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-12">
+
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <th>Type</th>
+                        <th>Name</th>
+                        <th>Distance</th>
+                        <th>Date</th>
+                    </thead>
+                    <tr ng-repeat="activity in adminCtrl.activities">
+                        <td>{{ activity.type }}</td>
+                        <td>{{ activity.name }}</td>
+                        <td>{{ activity.distance | number:2}}</td>
+                        <td>{{ activity.start_date | date:'dd/MM/yyyy'}}</td>
+                    </tr>
+                </table>
+
+            </div>
+
+        </div>
 
     </div>
 

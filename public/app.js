@@ -43,7 +43,7 @@ function Run($rootScope, Constants, $state) {
 }
 
 
-// Factory
+// Factory : Firebase
 angular.module('ChatFirebaseAngularApp').factory('Auth', Auth);
 
 Auth.$inject = ['$firebaseAuth', 'Constants'];
@@ -52,6 +52,33 @@ function Auth($firebaseAuth, Constants) {
 
     var ref = new Firebase(Constants.url_firebase);
     return $firebaseAuth(ref);
+
+}
+
+
+// Factory : Strava
+angular.module('ChatFirebaseAngularApp').factory('Strava', Strava);
+
+Strava.$inject = ['$http', 'Constants'];
+
+function Strava($http, Constants) {
+
+    return {
+        getActivities: getActivities
+    };
+
+    function getActivities() {
+        return $http.get('json/activities.json')
+            .then(getActivitiesSuccess)
+            .catch(getActivitiesFailed);
+
+        function getActivitiesSuccess(response) {
+            return response.data;
+        }
+        function getActivitiesFailed(error) {
+            console.error('XHR Failed for getAvengers.' + error.data);
+        }
+    }
 
 }
 
@@ -192,13 +219,16 @@ function ChatCtrl($firebaseArray, Constants) {
 // Contoller : Admin
 angular.module('ChatFirebaseAngularApp').controller('AdminCtrl', AdminCtrl);
 
-AdminCtrl.$inject = [];
+AdminCtrl.$inject = ['Strava'];
 
-function AdminCtrl() {
+function AdminCtrl(Strava) {
 
     var _self = this;
 
     _self.users = getUsers();
+    _self.activities = [];
+
+    getActivities();
 
     function getUsers() {
         return [
@@ -207,6 +237,17 @@ function AdminCtrl() {
             {email: 'gmonmert@gmail.com',        password: 'pass',     pseudo: 'Gautier', img: 'img/gautier.jpg'},
             {email: 'user@user.com',             password: 'password', pseudo: 'Unknown', img: '...'}
         ];
+    }
+
+    function getActivities() {
+        return Strava.getActivities()
+            .then(function(data) {
+                _self.activities = data;
+                angular.forEach( _self.activities, function(value, key) {
+                    value.distance = value.distance / 1000;
+                });
+                return _self.activities;
+            });
     }
 
 }
