@@ -8,7 +8,7 @@
                 <div class="panel-body" id="chat">
                     <ul class="chat">
 
-                        <li ng-repeat="message in messages" class="clearfix" ng-class-odd="'left'" ng-class-even="'right'">
+                        <li ng-repeat="message in chatCtrl.messages" class="clearfix" ng-class-odd="'left'" ng-class-even="'right'">
                             <span class="chat-img" ng-class-odd="'pull-left'" ng-class-even="'pull-right'">
                                 <img ng-src="{{ message.img }}" alt="User Avatar" class="img-circle" width="55px">
                             </span>
@@ -35,10 +35,10 @@
 
                     </ul>
                 </div>
-                <form ng-submit="addMessage()">
+                <form ng-submit="chatCtrl.addMessage()">
                     <div class="panel-footer">
                         <div class="input-group">
-                            <input ng-model="newMessageText" id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here...">
+                            <input ng-model="chatCtrl.newMessageText" id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here...">
                             <span class="input-group-btn">
                                 <button type="submit" class="btn btn-warning btn-sm" id="btn-chat">
                                     Send</button>

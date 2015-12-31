@@ -1,20 +1,27 @@
+'use strict';
+
+
 // Module
-var app = angular.module("ChatFirebaseAngularApp", ["firebase", "ui.router"]);
+angular.module('ChatFirebaseAngularApp', ['firebase', 'ui.router']);
 
 
-// Constant
-app.constant("Constants", {
-	"url_firebase": "https://popping-fire-9851.firebaseio.com/data"
+// Constants
+angular.module('ChatFirebaseAngularApp').constant('Constants', {
+	'url_firebase': 'https://popping-fire-9851.firebaseio.com/data'
 });
 
 
 // Run
-app.run(["$rootScope", "Constants", "$state", function($rootScope, Constants, $state) {
+angular.module('ChatFirebaseAngularApp').run(Run);
 
-    $rootScope.$on("$stateChangeStart", function(event, toState, toParams, fromState, fromParams) {
+Run.$inject = ['$rootScope', 'Constants', '$state'];
+
+function Run($rootScope, Constants, $state) {
+
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
         if (toState.authenticate && !$rootScope.isAuthenticated){
             // User isn’t authenticated
-            $state.go("home");
+            $state.go('home');
             event.preventDefault();
         }
     });
@@ -26,122 +33,181 @@ app.run(["$rootScope", "Constants", "$state", function($rootScope, Constants, $s
     function authDataCallback(authData) {
         if (authData) {
             $rootScope.isAuthenticated = true;
-            console.log("User " + authData.uid + " is logged in with " + authData.provider);
+            console.log('User ' + authData.uid + ' is logged in with ' + authData.provider);
         } else {
             $rootScope.isAuthenticated = false
-            console.log("User is logged out");
+            console.log('User is logged out');
         }
     }
 
-}]);
+}
 
 
 // Factory
-app.factory("Auth", ["$firebaseAuth", "Constants", function($firebaseAuth, Constants) {
+angular.module('ChatFirebaseAngularApp').factory('Auth', Auth);
 
-	var ref = new Firebase(Constants.url_firebase);
-	return $firebaseAuth(ref);
+Auth.$inject = ['$firebaseAuth', 'Constants'];
 
-}]);
+function Auth($firebaseAuth, Constants) {
+
+    var ref = new Firebase(Constants.url_firebase);
+    return $firebaseAuth(ref);
+
+}
 
 
 // Config
-app.config(["$stateProvider", "$urlRouterProvider", "$locationProvider", function($stateProvider, $urlRouterProvider, $locationProvider) {
+angular.module('ChatFirebaseAngularApp').config(Config);
+
+Config.$inject = ['$stateProvider', '$urlRouterProvider', '$locationProvider'];
+
+function Config($stateProvider, $urlRouterProvider, $locationProvider) {
 
     // Active the html5Mode
     $locationProvider.html5Mode(true).hashPrefix('!')
 
-	// For any unmatched url, redirect to /
-	$urlRouterProvider.otherwise("/");
+    // For any unmatched url, redirect to /
+    $urlRouterProvider.otherwise('/');
 
-	$stateProvider
-	  .state("home", {
-		url: "/",
-	    templateUrl: "/views/login.html",
-	    controller: "LoginCtrl",
-        authenticate: false
-	  })
-	  .state("chat", {
-        url: "/chat",
-	    templateUrl: "/views/chat.html",
-	    controller: "ChatCtrl",
-        authenticate: true
-	  });
+    $stateProvider
+        .state('home', {
+            url: '/',
+            templateUrl: '/views/login.html',
+            controller: 'LoginCtrl',
+            controllerAs: 'loginCtrl',
+            authenticate: false
+        })
+        .state('chat', {
+            url: '/chat',
+            templateUrl: '/views/chat.html',
+            controller: 'ChatCtrl',
+            controllerAs: 'chatCtrl',
+            authenticate: true
+        })
+        .state('admin', {
+            url: '/admin',
+            templateUrl: '/views/admin.html',
+            controller: 'AdminCtrl',
+            controllerAs: 'adminCtrl',
+            authenticate: false
+        });
 
-}]);
+}
 
 
-// Controller : Login
-app.controller("LoginCtrl", ["$scope", "$state", "Auth", function($scope, $state, Auth) {
+// Contoller : Login
+angular.module('ChatFirebaseAngularApp').controller('LoginCtrl', LoginCtrl);
+
+LoginCtrl.$inject = ['$state', 'Auth'];
+
+function LoginCtrl($state, Auth) {
+
+    var _self = this;
+
+    _self.login = login;
 
     // Function to log the user
-	$scope.login = function() {
-		Auth.$authWithPassword({
-		  email    : $scope.email,
-		  password : $scope.password
-		}).then(function(authData) {
-			console.log("Login success : " + authData);
-			$state.go("chat");
-		}, function(error) {
+    function login() {
+        Auth.$authWithPassword({
+            email    : _self.email,
+            password : _self.password
+        }).then(function(authData) {
+            console.log("Login success : " + authData);
+            $state.go("chat");
+        }, function(error) {
             console.error("Login fail : " + error);
         });
-	};
+    }
 
-}]);
+}
 
 
 // Contoller : Chat
-app.controller("ChatCtrl", ["$scope", "$firebaseArray", "Constants", function($scope, $firebaseArray, Constants) {
+angular.module('ChatFirebaseAngularApp').controller('ChatCtrl', ChatCtrl);
 
-    // Get all the messages of the chat
-	var ref = new Firebase(Constants.url_firebase);
-	$scope.messages = $firebaseArray(ref);
+ChatCtrl.$inject = ['$firebaseArray', 'Constants'];
 
-    // Get the user connected
-    var authData = ref.getAuth();
-    $scope.email = authData.password.email;
+function ChatCtrl($firebaseArray, Constants) {
+
+    var _self = this;
+
+    var ref = new Firebase(Constants.url_firebase);
+    var authData = ref.getAuth(); // get the user connected
+
+    _self.scroll = scroll;
+    _self.messages = $firebaseArray(ref);
+    _self.email = authData.password.email;
+    _self.pseudo;
+    _self.img;
+    _self.addMessage = addMessage;
+
     getInfosOnTheUserConnected();
 
     // Function to add a new message in the chat
-	$scope.addMessage = function() {
+    function addMessage() {
         var timestamp = new Date().getTime();
-		$scope.messages.$add({
-			user:   $scope.email,
-            pseudo: $scope.pseudo,
-			text:   $scope.newMessageText,
-            img:    $scope.img,
+        _self.messages.$add({
+            user:   _self.email,
+            pseudo: _self.pseudo,
+            text:   _self.newMessageText,
+            img:    _self.img,
             time:   timestamp
-		}).then(function() {
-            $scope.scroll();
+        }).then(function() {
+            _self.scroll();
         });
-		$scope.newMessageText = "";
-	};
-
-    // Scroll down when the chat is loaded
-    setTimeout(function(){
-        $scope.scroll();
-    }, 2000);
+        _self.newMessageText = "";
+    };
 
     // Scroll
-    $scope.scroll = function() {
+    function scroll() {
         $('.panel-body').scrollTop(1000000);
     };
 
     // Complete infos according to the user connected
     function getInfosOnTheUserConnected() {
-        if ($scope.email === "quentin.monmert@gmail.com") {
-            $scope.pseudo = "Quentin";
-            $scope.img = "img/quentin.jpg";
-        } else if ($scope.email === "thibaudmonmert@gmail.com") {
-            $scope.pseudo = "Thibaud";
-            $scope.img = "img/thibaud.jpg";
-        } else if ($scope.email === "gmonmert@gmail.com") {
-            $scope.pseudo = "Gautier";
-            $scope.img = "img/gautier.jpg";
+        if (_self.email === 'quentin.monmert@gmail.com') {
+            _self.pseudo = 'Quentin';
+            _self.img = 'img/quentin.jpg';
+        } else if (_self.email === 'thibaudmonmert@gmail.com') {
+            _self.pseudo = 'Thibaud';
+            _self.img = 'img/thibaud.jpg';
+        } else if (_self.email === 'gmonmert@gmail.com') {
+            _self.pseudo = 'Gautier';
+            _self.img = 'img/gautier.jpg';
         } else {
-            $scope.pseudo = "Unknown";
-            $scope.img = "http://placehold.it/50/55C1E7/fff&amp;text=U";
+            _self.pseudo = 'Unknown';
+            _self.img = 'http://placehold.it/50/55C1E7/fff&amp;text=U';
         }
     };
 
-}]);
+    // Scroll down when the chat is loaded
+    setTimeout(function(){
+        _self.scroll();
+    }, 2000);
+
+
+}
+
+
+// Contoller : Admin
+angular.module('ChatFirebaseAngularApp').controller('AdminCtrl', AdminCtrl);
+
+AdminCtrl.$inject = [];
+
+function AdminCtrl() {
+
+    var _self = this;
+
+    _self.users = getUsers();
+
+    function getUsers() {
+        return [
+            {email: 'quentin.monmert@gmail.com', password: 'admin',    pseudo: 'Quentin', img: 'img/quentin.jpg'},
+            {email: 'thibaudmonmert@gmail.com',  password: 'pass',     pseudo: 'Thibaud', img: 'img/thibaud.jpg'},
+            {email: 'gmonmert@gmail.com',        password: 'pass',     pseudo: 'Gautier', img: 'img/gautier.jpg'},
+            {email: 'user@user.com',             password: 'password', pseudo: 'Unknown', img: '...'}
+        ];
+    }
+
+}
+
