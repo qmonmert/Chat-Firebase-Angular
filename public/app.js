@@ -49,6 +49,7 @@ angular.module('ChatFirebaseAngularApp').factory('AuthService', AuthService);
 
 AuthService.$inject = ['$firebaseAuth', 'Constants'];
 
+/* @ngInject */
 function AuthService($firebaseAuth, Constants) {
 
     var ref = new Firebase(Constants.url_firebase);
@@ -62,6 +63,7 @@ angular.module('ChatFirebaseAngularApp').factory('StravaService', StravaService)
 
 StravaService.$inject = ['$http', 'Constants'];
 
+/* @ngInject */
 function StravaService($http, Constants) {
 
     return {
@@ -145,6 +147,7 @@ angular.module('ChatFirebaseAngularApp').controller('LoginCtrl', LoginCtrl);
 
 LoginCtrl.$inject = ['$state', 'AuthService'];
 
+/* @ngInject */
 function LoginCtrl($state, AuthService) {
 
     var _self = this;
@@ -170,9 +173,10 @@ function LoginCtrl($state, AuthService) {
 // Contoller : Chat
 angular.module('ChatFirebaseAngularApp').controller('ChatCtrl', ChatCtrl);
 
-ChatCtrl.$inject = ['$firebaseArray', 'Constants'];
+ChatCtrl.$inject = ['$firebaseArray', '$timeout', 'Constants'];
 
-function ChatCtrl($firebaseArray, Constants) {
+/* @ngInject */
+function ChatCtrl($firebaseArray, $timeout, Constants) {
 
     var _self = this;
 
@@ -226,10 +230,9 @@ function ChatCtrl($firebaseArray, Constants) {
     };
 
     // Scroll down when the chat is loaded
-    setTimeout(function(){
+    $timeout(function(){
         _self.scroll();
     }, 2000);
-
 
 }
 
@@ -239,6 +242,7 @@ angular.module('ChatFirebaseAngularApp').controller('AdminCtrl', AdminCtrl);
 
 AdminCtrl.$inject = ['StravaService', 'ActivitiesPrepService'];
 
+/* @ngInject */
 function AdminCtrl(StravaService, ActivitiesPrepService) {
 
     var _self = this;
