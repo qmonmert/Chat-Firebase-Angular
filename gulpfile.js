@@ -8,7 +8,14 @@ var gulp        = require('gulp');
     del         = require('del'),
     browserSync = require('browser-sync').create(),
     reload      = browserSync.reload,
-    compass     = require('gulp-compass');
+    compass     = require('gulp-compass')
+    jshint      = require('gulp-jshint');
+
+gulp.task('lint', function() {
+    return gulp.src('public/app.js')
+        .pipe(jshint())
+        .pipe(jshint.reporter('default'));
+})
 
 gulp.task('uglify', function() {
     return gulp.src(['public/app.js'])
@@ -20,7 +27,7 @@ gulp.task('uglify', function() {
         }))
         .pipe(uglify())
         .pipe(gulp.dest('public/dist/js/'));
-})
+});
 
 gulp.task('compass', function() {
     return gulp.src('public/sass/*.scss')
