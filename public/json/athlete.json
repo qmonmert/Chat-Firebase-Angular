@@ -1,0 +1,117 @@
+{
+  "id": 5907546,
+  "username": "qmonmert",
+  "resource_state": 3,
+  "firstname": "Quentin",
+  "lastname": "Monmert",
+  "profile_medium": "https://dgalywyr863hv.cloudfront.net/pictures/athletes/5907546/1882943/3/medium.jpg",
+  "profile": "https://dgalywyr863hv.cloudfront.net/pictures/athletes/5907546/1882943/3/large.jpg",
+  "city": "Paris ",
+  "state": "Ile-de-France ",
+  "country": "France",
+  "sex": "M",
+  "friend": null,
+  "follower": null,
+  "premium": false,
+  "created_at": "2014-08-03T17:44:42Z",
+  "updated_at": "2015-12-20T12:23:32Z",
+  "badge_type_id": 0,
+  "follower_count": 70,
+  "friend_count": 93,
+  "mutual_friend_count": 0,
+  "athlete_type": 1,
+  "date_preference": "%m/%d/%Y",
+  "measurement_preference": "meters",
+  "email": "quentin.monmert@gmail.com",
+  "ftp": null,
+  "weight": 58.0,
+  "clubs": [
+    {
+      "id": 149983,
+      "resource_state": 2,
+      "name": "Team Skechers Performance Division  - France ",
+      "profile_medium": "https://dgalywyr863hv.cloudfront.net/pictures/clubs/149983/3036948/1/medium.jpg",
+      "profile": "https://dgalywyr863hv.cloudfront.net/pictures/clubs/149983/3036948/1/large.jpg"
+    }
+  ],
+  "bikes": [],
+  "shoes": [
+    {
+      "id": "g1043307",
+      "primary": false,
+      "name": "Skechers GO Run Ultra Road",
+      "resource_state": 2,
+      "distance": 72625.0
+    },
+    {
+      "id": "g713603",
+      "primary": false,
+      "name": "adidas Ultra Boost",
+      "resource_state": 2,
+      "distance": 639440.0
+    },
+    {
+      "id": "g933537",
+      "primary": false,
+      "name": "Skechers Go Run 4",
+      "resource_state": 2,
+      "distance": 188672.0
+    },
+    {
+      "id": "g958122",
+      "primary": false,
+      "name": "Skechers Go Run Ride 4",
+      "resource_state": 2,
+      "distance": 162737.0
+    },
+    {
+      "id": "g649177",
+      "primary": false,
+      "name": "Skechers Go Run Ride 3 NYC",
+      "resource_state": 2,
+      "distance": 510594.0
+    },
+    {
+      "id": "g619995",
+      "primary": false,
+      "name": "Skechers Go Bionic Trail",
+      "resource_state": 2,
+      "distance": 33432.0
+    },
+    {
+      "id": "g470494",
+      "primary": false,
+      "name": "Skechers go run 2",
+      "resource_state": 2,
+      "distance": 415261.0
+    },
+    {
+      "id": "g470496",
+      "primary": false,
+      "name": "ASICS Gel DS trainer 18",
+      "resource_state": 2,
+      "distance": 479212.0
+    },
+    {
+      "id": "g470498",
+      "primary": false,
+      "name": "Nike",
+      "resource_state": 2,
+      "distance": 448413.0
+    },
+    {
+      "id": "g838884",
+      "primary": false,
+      "name": "Skechers Go Meb Speed 3",
+      "resource_state": 2,
+      "distance": 161830.0
+    },
+    {
+      "id": "g468974",
+      "primary": true,
+      "name": "Skechers GO Run Ride 3",
+      "resource_state": 2,
+      "distance": 877498.0
+    }
+  ]
+}

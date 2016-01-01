@@ -11,7 +11,10 @@
             </div>
 
             <div class="col-md-8">
-                Quentin
+                <ul>
+                    <li>Lastname : {{ adminCtrl.athlete.lastname }}</li>
+                    <li>Firstname : {{ adminCtrl.athlete.firstname }}</li>
+                </ul>
             </div>
 
         </div>
@@ -37,13 +40,11 @@
                         <th>Email</th>
                         <th>Password</th>
                         <th>Pseudo</th>
-                        <th>Img</th>
                     </thead>
                     <tr ng-repeat="user in adminCtrl.users">
                         <td>{{ user.email }}</td>
                         <td>{{ user.password }}</td>
                         <td>{{ user.pseudo }}</td>
-                        <td>{{ user.img }}</td>
                     </tr>
                 </table>
 
@@ -56,7 +57,38 @@
             <div class="col-md-12">
 
                 <button class="btn btn-primary" type="button">
-                    Activities <span class="badge">50</span>
+                    Shoes <span class="badge">{{ adminCtrl.athlete.shoes.length }}</span>
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-12">
+
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <th>Name</th>
+                    <th>Distance</th>
+                    </thead>
+                    <tr ng-repeat="activity in adminCtrl.athlete.shoes | orderBy:'-distance' ">
+                        <td>{{ activity.name }}</td>
+                        <td>{{ activity.distance | number:2}}</td>
+                    </tr>
+                </table>
+
+            </div>
+
+        </div>
+
+        <div class="row" style="padding-bottom: 10px;">
+
+            <div class="col-md-12">
+
+                <button class="btn btn-primary" type="button">
+                    Activities <span class="badge">{{ adminCtrl.activities.length }}</span>
                 </button>
 
             </div>

@@ -7,6 +7,7 @@ angular.module('ChatFirebaseAngularApp', ['firebase', 'ui.router']);
 
 // Constants
 angular.module('ChatFirebaseAngularApp').constant('Constants', {
+    'json_path': 'json/',
 	'url_firebase': 'https://popping-fire-9851.firebaseio.com/data'
 });
 
@@ -44,11 +45,11 @@ function Run($rootScope, Constants, $state) {
 
 
 // Factory : Firebase
-angular.module('ChatFirebaseAngularApp').factory('Auth', Auth);
+angular.module('ChatFirebaseAngularApp').factory('AuthService', AuthService);
 
-Auth.$inject = ['$firebaseAuth', 'Constants'];
+AuthService.$inject = ['$firebaseAuth', 'Constants'];
 
-function Auth($firebaseAuth, Constants) {
+function AuthService($firebaseAuth, Constants) {
 
     var ref = new Firebase(Constants.url_firebase);
     return $firebaseAuth(ref);
@@ -57,26 +58,38 @@ function Auth($firebaseAuth, Constants) {
 
 
 // Factory : Strava
-angular.module('ChatFirebaseAngularApp').factory('Strava', Strava);
+angular.module('ChatFirebaseAngularApp').factory('StravaService', StravaService);
 
-Strava.$inject = ['$http', 'Constants'];
+StravaService.$inject = ['$http', 'Constants'];
 
-function Strava($http, Constants) {
+function StravaService($http, Constants) {
 
     return {
-        getActivities: getActivities
+        getActivities: getActivities,
+        getAthlete: getAthlete
     };
 
     function getActivities() {
-        return $http.get('json/activities.json')
+        return $http.get(Constants.json_path + 'activities.json')
             .then(getActivitiesSuccess)
             .catch(getActivitiesFailed);
-
         function getActivitiesSuccess(response) {
             return response.data;
         }
         function getActivitiesFailed(error) {
-            console.error('XHR Failed for getAvengers.' + error.data);
+            console.error('XHR Failed for getActivities.' + error.data);
+        }
+    }
+
+    function getAthlete() {
+        return $http.get(Constants.json_path + 'athlete.json')
+            .then(getAthleteSuccess)
+            .catch(getAthleteFailed);
+        function getAthleteSuccess(response) {
+            return response.data;
+        }
+        function getAthleteFailed(error) {
+            console.error('XHR Failed for getAthlete.' + error.data);
         }
     }
 
@@ -116,6 +129,11 @@ function Config($stateProvider, $urlRouterProvider, $locationProvider) {
             templateUrl: '/views/admin.html',
             controller: 'AdminCtrl',
             controllerAs: 'adminCtrl',
+            resolve: {
+                ActivitiesPrepService: function(StravaService) {
+                    return StravaService.getActivities();
+                }
+            },
             authenticate: false
         });
 
@@ -125,9 +143,9 @@ function Config($stateProvider, $urlRouterProvider, $locationProvider) {
 // Contoller : Login
 angular.module('ChatFirebaseAngularApp').controller('LoginCtrl', LoginCtrl);
 
-LoginCtrl.$inject = ['$state', 'Auth'];
+LoginCtrl.$inject = ['$state', 'AuthService'];
 
-function LoginCtrl($state, Auth) {
+function LoginCtrl($state, AuthService) {
 
     var _self = this;
 
@@ -135,14 +153,14 @@ function LoginCtrl($state, Auth) {
 
     // Function to log the user
     function login() {
-        Auth.$authWithPassword({
+        AuthService.$authWithPassword({
             email    : _self.email,
             password : _self.password
         }).then(function(authData) {
-            console.log("Login success : " + authData);
-            $state.go("chat");
+            console.log('Login success : ' + authData);
+            $state.go('chat');
         }, function(error) {
-            console.error("Login fail : " + error);
+            console.error('Login fail : ' + error);
         });
     }
 
@@ -182,7 +200,7 @@ function ChatCtrl($firebaseArray, Constants) {
         }).then(function() {
             _self.scroll();
         });
-        _self.newMessageText = "";
+        _self.newMessageText = '';
     };
 
     // Scroll
@@ -219,16 +237,18 @@ function ChatCtrl($firebaseArray, Constants) {
 // Contoller : Admin
 angular.module('ChatFirebaseAngularApp').controller('AdminCtrl', AdminCtrl);
 
-AdminCtrl.$inject = ['Strava'];
+AdminCtrl.$inject = ['StravaService', 'ActivitiesPrepService'];
 
-function AdminCtrl(Strava) {
+function AdminCtrl(StravaService, ActivitiesPrepService) {
 
     var _self = this;
 
     _self.users = getUsers();
-    _self.activities = [];
+    _self.activities = ActivitiesPrepService;
+    _self.athlete = {};
 
-    getActivities();
+    formatDistance();
+    getAthlete();
 
     function getUsers() {
         return [
@@ -239,14 +259,20 @@ function AdminCtrl(Strava) {
         ];
     }
 
-    function getActivities() {
-        return Strava.getActivities()
+    function formatDistance() {
+        angular.forEach( _self.activities, function(value, key) {
+            value.distance = value.distance / 1000;
+        });
+    }
+
+    function getAthlete() {
+        return StravaService.getAthlete()
             .then(function(data) {
-                _self.activities = data;
-                angular.forEach( _self.activities, function(value, key) {
+                _self.athlete = data;
+                angular.forEach( _self.athlete.shoes, function(value, key) {
                     value.distance = value.distance / 1000;
                 });
-                return _self.activities;
+                return _self.athlete;
             });
     }
 
