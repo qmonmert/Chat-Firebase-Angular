@@ -129,7 +129,7 @@ function Config($stateProvider, $urlRouterProvider, $locationProvider) {
             templateUrl: '/views/admin.html',
             controller: 'AdminCtrl',
             controllerAs: 'adminCtrl',
-            resolve: {
+            resolve: { /* @ngInject */
                 ActivitiesPrepService: function(StravaService) {
                     return StravaService.getActivities();
                 }
