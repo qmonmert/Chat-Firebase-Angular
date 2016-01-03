@@ -1,67 +1,103 @@
-var gulp        = require('gulp');
-    plumber     = require('gulp-plumber'),
-    uglify      = require('gulp-uglify'),
-    rename      = require('gulp-rename'),
-    ngAnnotate = require('gulp-ng-annotate'),
-    minifyCss   = require('gulp-minify-css'),
-    concatCss   = require('gulp-concat-css'),
+/////////////////////////////////
+/////////// VARIABLES ///////////
+/////////////////////////////////
+var gulp        = require('gulp'),
+    plugins     = require('gulp-load-plugins')(),
     del         = require('del'),
     browserSync = require('browser-sync').create(),
-    reload      = browserSync.reload,
-    compass     = require('gulp-compass')
-    jshint      = require('gulp-jshint');
+    reload      = browserSync.reload;
+    
+var path = {
+    app:       'public/app.js',  
+    css:       'public/css',
+    sass:      'public/sass', 
+    scss:      'public/sass/*.scss',  
+    allCss:    'public/css/*.css',
+    minBundle: 'bundle.min.css',
+    cssBundle: 'public/css/bundle.min.css',
+    distJs:    'public/dist/js/',
+    distCss:   'public/dist/css/'
+}; 
 
+
+//////////////////////////////////
+/////////// CODE STYLE ///////////
+//////////////////////////////////
 gulp.task('lint', function() {
-    return gulp.src('public/app.js')
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'));
-})
+    return gulp.src(path.app)
+        .pipe(plugins.jshint())
+        .pipe(plugins.jshint.reporter('default'));
+});
 
+
+//////////////////////////
+/////////// JS ///////////
+//////////////////////////
 gulp.task('uglify', function() {
-    return gulp.src(['public/app.js'])
-        .pipe(rename({suffix:'.min'}))
-        .pipe(ngAnnotate({
-            // true helps add where @ngInject is not used. It infers.
-            // Doesn't work with resolve, so we must be explicit there
+    return gulp.src([path.app])
+        .pipe(plugins.plumber())
+        .pipe(plugins.rename({
+            suffix: '.min'
+        }))
+        .pipe(plugins.ngAnnotate({
             add: true
         }))
-        .pipe(uglify())
-        .pipe(gulp.dest('public/dist/js/'));
+        .pipe(plugins.uglify())
+        .pipe(gulp.dest(path.distJs));
 });
 
+
+///////////////////////////
+/////////// CSS ///////////
+///////////////////////////
 gulp.task('compass', function() {
-    return gulp.src('public/sass/*.scss')
-        .pipe(plumber())
-        .pipe(compass({
-            css:  'public/css',
-            sass: 'public/sass'
+    return gulp.src(path.scss)
+        .pipe(plugins.plumber())
+        .pipe(plugins.compass({
+            css:  path.css,
+            sass: path.sass
         }));
 });
-
 gulp.task('clean:css', function() {
     del([
-        'public/css/bundle.min.css'
+        path.cssBundle
     ]);
 });
 
-gulp.task('build:css', ['clean:css', 'compass'], function() {
-    return gulp.src('public/css/*.css')
-        .pipe(concatCss("bundle.min.css"))
-        .pipe(minifyCss({compatibility: 'ie8'}))
-        .pipe(gulp.dest('public/dist/css/'))
-        .pipe(browserSync.stream());
-})
 
-gulp.task('watch', function() {
-    gulp.watch(['public/app.js'], ['uglify']);
-    gulp.watch(['public/sass/*.scss'], ['build:css']);
-    //gulp.watch(['public/**/*.html, public/**/*.js']).on('change', reload);
+////////////////////////////////////////
+/////////// BUILD CSS and JS ///////////
+////////////////////////////////////////
+gulp.task('build:css', ['clean:css', 'compass'], function() {
+    return gulp.src(path.allCss)
+        .pipe(plugins.concatCss(path.minBundle))
+        .pipe(plugins.minifyCss({
+            compatibility: 'ie8'
+        }))
+        .pipe(gulp.dest(path.distCss))
+        .pipe(browserSync.stream());
+});
+gulp.task('build:js', ['uglify'], function() {
+    return gulp.src([path.app])
+        .pipe(browserSync.stream());
 });
 
+
+//////////////////////////////////////
+/////////// WATCH and SYNC ///////////
+//////////////////////////////////////
+gulp.task('watch', function() {
+    gulp.watch([path.app],  ['build:js', 'lint'] );
+    gulp.watch([path.scss], ['build:css']);
+});
 gulp.task('browser-sync', function() {
     browserSync.init({
         proxy: "http://localhost:8080/#/"
     });
 });
 
+
+////////////////////////////////////
+/////////// DEFAULT TASK ///////////
+////////////////////////////////////
 gulp.task('default', ['browser-sync', 'watch']);
