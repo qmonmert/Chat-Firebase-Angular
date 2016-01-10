@@ -38,8 +38,10 @@ gulp.task('lint', function() {
 //////////////////////////
 gulp.task('uglify', function() {
     return gulp.src([path.angular, path.app, path.js])
-        //.pipe(plugins.ngModuleSort())
         .pipe(plugins.plumber())
+        .pipe(plugins.sourcemaps.init({
+            loadMaps: true
+        }))
         .pipe(plugins.concat(path.jsUglify, {
             newLine: ';'
         }))
@@ -47,8 +49,10 @@ gulp.task('uglify', function() {
             add: true
         }))
         .pipe(plugins.uglify({
-            mangle: true
+            mangle: true,
+            compress: false
         }))
+        .pipe(plugins.sourcemaps.write('./'))
         .pipe(gulp.dest(path.distJs));
 });
 gulp.task('clean:js', function() {
