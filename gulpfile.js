@@ -8,13 +8,16 @@ var gulp        = require('gulp'),
     reload      = browserSync.reload;
     
 var path = {
+    angular:   'public/dist/angular.min.js',
     app:       'public/app.js',  
     css:       'public/css',
+    js:        'public/scripts/**/*.js',
     sass:      'public/sass', 
     scss:      'public/sass/*.scss',  
     allCss:    'public/css/*.css',
     minBundle: 'bundle.min.css',
     cssBundle: 'public/css/bundle.min.css',
+    jsUglify:  'app.min.js',
     distJs:    'public/dist/js/',
     distCss:   'public/dist/css/'
 }; 
@@ -34,16 +37,24 @@ gulp.task('lint', function() {
 /////////// JS ///////////
 //////////////////////////
 gulp.task('uglify', function() {
-    return gulp.src([path.app])
+    return gulp.src([path.angular, path.app, path.js])
+        //.pipe(plugins.ngModuleSort())
         .pipe(plugins.plumber())
-        .pipe(plugins.rename({
-            suffix: '.min'
+        .pipe(plugins.concat(path.jsUglify, {
+            newLine: ';'
         }))
         .pipe(plugins.ngAnnotate({
             add: true
         }))
-        .pipe(plugins.uglify())
+        .pipe(plugins.uglify({
+            mangle: true
+        }))
         .pipe(gulp.dest(path.distJs));
+});
+gulp.task('clean:js', function() {
+    del([
+        path.distJs + path.jsUglify
+    ]);
 });
 
 
@@ -77,8 +88,8 @@ gulp.task('build:css', ['clean:css', 'compass'], function() {
         .pipe(gulp.dest(path.distCss))
         .pipe(browserSync.stream());
 });
-gulp.task('build:js', ['uglify'], function() {
-    return gulp.src([path.app])
+gulp.task('build:js', ['clean:js', 'uglify'], function() {
+    return gulp.src([path.app, path.js])
         .pipe(browserSync.stream());
 });
 
@@ -87,7 +98,7 @@ gulp.task('build:js', ['uglify'], function() {
 /////////// WATCH and SYNC ///////////
 //////////////////////////////////////
 gulp.task('watch', function() {
-    gulp.watch([path.app],  ['build:js', 'lint'] );
+    gulp.watch([path.app, path.js],  ['build:js', 'lint'] );
     gulp.watch([path.scss], ['build:css']);
 });
 gulp.task('browser-sync', function() {

@@ -14,10 +14,10 @@
   "follower": null,
   "premium": false,
   "created_at": "2014-08-03T17:44:42Z",
-  "updated_at": "2015-12-20T12:23:32Z",
+  "updated_at": "2016-01-05T15:05:54Z",
   "badge_type_id": 0,
-  "follower_count": 70,
-  "friend_count": 93,
+  "follower_count": 75,
+  "friend_count": 98,
   "mutual_friend_count": 0,
   "athlete_type": 1,
   "date_preference": "%m/%d/%Y",
@@ -29,7 +29,7 @@
     {
       "id": 149983,
       "resource_state": 2,
-      "name": "Team Skechers Performance Division  - France ",
+      "name": "Skechers Performance Division  - France ",
       "profile_medium": "https://dgalywyr863hv.cloudfront.net/pictures/clubs/149983/3036948/1/medium.jpg",
       "profile": "https://dgalywyr863hv.cloudfront.net/pictures/clubs/149983/3036948/1/large.jpg"
     }
@@ -41,7 +41,7 @@
       "primary": false,
       "name": "Skechers GO Run Ultra Road",
       "resource_state": 2,
-      "distance": 72625.0
+      "distance": 105717.0
     },
     {
       "id": "g713603",
@@ -55,14 +55,14 @@
       "primary": false,
       "name": "Skechers Go Run 4",
       "resource_state": 2,
-      "distance": 188672.0
+      "distance": 203195.0
     },
     {
       "id": "g958122",
       "primary": false,
       "name": "Skechers Go Run Ride 4",
       "resource_state": 2,
-      "distance": 162737.0
+      "distance": 184187.0
     },
     {
       "id": "g649177",
@@ -104,7 +104,7 @@
       "primary": false,
       "name": "Skechers Go Meb Speed 3",
       "resource_state": 2,
-      "distance": 161830.0
+      "distance": 177985.0
     },
     {
       "id": "g468974",
